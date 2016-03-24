@@ -41,7 +41,7 @@ func main() {
 
 	fmt.Println(from)
 	fmt.Println(to)
-	//export("2016-01-01", "2016-03-24")
+	export("2016-01-01", "2016-03-24")
 
 }
 
