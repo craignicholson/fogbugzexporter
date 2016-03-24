@@ -20,7 +20,7 @@ To install it dependencies, run:
 
 
 To run the application
-    go run main.go
+    go run main.go "2016-01-01" "2016-01-03"
 
 
 Notes
@@ -32,7 +32,6 @@ Currently you can just edit the code to change the dates.  I will
 add CLI parameters later.
 
 ```go
-
 
   export("2016-01-01", "2016-03-24")
 
