@@ -65,7 +65,7 @@ func setupAPI() {
 func export(from string, to string) {
 	api.Login(configs.User, configs.Password)
 	//hours := api.GetHours("2016-01-01", "2016-03-16", "America/Chicago")
-	hours := api.GetHours(from, to, "America/Chicago")
+	hours := api.GetHours(from, to, configs.Timezone)
 
 	api.InvalidateToken()
 
