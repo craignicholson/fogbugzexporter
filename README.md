@@ -20,6 +20,7 @@ To install it dependencies, run:
 
 
 To run the application
+
     go run main.go "2016-01-01" "2016-01-03"
 
 
