@@ -35,10 +35,13 @@ var configs config
 
 func main() {
 	setupAPI()
-
-	fmt.Println(api.Root)
 	// Receives yyyy-mm-dd in your local timezone
-	export("2016-01-01", "2016-03-24")
+	from := os.Args[1:2]
+	to := os.Args[2:3]
+
+	fmt.Println(from)
+	fmt.Println(to)
+	//export("2016-01-01", "2016-03-24")
 
 }
 
