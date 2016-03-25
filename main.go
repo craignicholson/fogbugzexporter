@@ -35,6 +35,7 @@ var configs config
 func main() {
 
 	setupAPI()
+
 	// Receives YYYY-MM-DD in your local timezone
 	// Check for required agruments
 	if len(os.Args) != 3 {
@@ -44,6 +45,7 @@ func main() {
 	} else {
 		var from = os.Args[1]
 		var to = os.Args[2]
+
 		if validateArgs(from, to, configs.Timezone) {
 			fmt.Println("Parameters good - fetching data")
 			export(from, to)
