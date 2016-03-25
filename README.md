@@ -23,7 +23,7 @@ To run the application
     go run main.go "2016-01-01" "2016-01-03"
 
 
-Example Output
+Example Output Command Line
 
     Parameters good - fetching data
     map[cmd:[logon] email:[Company] password:[*******************]]
@@ -55,4 +55,4 @@ Unknowns
 
 Testing on windows I had to use to pull down the code.
 
-  go get -v github.com/craignicholson/fogbugz/fogbugz
+    go get -v github.com/craignicholson/fogbugz/fogbugz
