@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"time"
 
 	"gopkg.in/yaml.v2"
 
@@ -34,15 +35,49 @@ var api fogbugz.API
 var configs config
 
 func main() {
+
 	setupAPI()
 	// Receives yyyy-mm-dd in your local timezone
-	from := os.Args[1:2]
-	to := os.Args[2:3]
+	//Check if we have args
+	if len(os.Args) != 3 {
+		fmt.Println("Missing Parameters")
+		os.Exit(3)
+	} else {
+		var from = os.Args[1]
+		var to = os.Args[2]
+		if validateArgs(from, to, configs.Timezone) {
+			fmt.Println("Parameters good - fetching data")
+			export(from, to)
+		}
+		fmt.Println("Done - Bye Bye")
+	}
+}
 
-	fmt.Println(from)
-	fmt.Println(to)
-	export("2016-01-01", "2016-03-24")
+// validateArgs checks the arguments for yyyy-mm-dd
+// format and returns false is any of the arguements
+// does not match this pattern
+func validateArgs(startDateLocal string, endDateLocal string, timezone string) bool {
+	//Try and Parse the strings into dates.
+	//If any of the strings fails to pass return false
+	isValid := true
+	loc, errloc := time.LoadLocation(timezone)
+	if errloc != nil {
+		fmt.Println(errloc)
+		isValid = false
+	}
+	const shortFormlayout = "2006-01-02"
+	_, errStart := time.ParseInLocation(shortFormlayout, startDateLocal, loc)
+	if errStart != nil {
+		fmt.Println(errStart)
+		isValid = false
+	}
+	_, errEnd := time.ParseInLocation(shortFormlayout, endDateLocal, loc)
+	if errEnd != nil {
+		fmt.Println(errEnd)
+		isValid = false
+	}
 
+	return isValid
 }
 
 // setupAPI loads the configs and assigns the configs to the api
