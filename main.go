@@ -36,6 +36,8 @@ var configs config
 // User enters from and to dates in the following formats:
 // "2006-01-02" "2006-01-03"
 // Timezone is located in the app.yaml file
+// TODO: Add execution time in duration output at the end
+// TODO: Write all errors to an log or .out file for each run
 func main() {
 
 	setupAPI()
