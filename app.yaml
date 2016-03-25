@@ -1,14 +1,11 @@
 # Configuration File
 #
 # rootsite is the FogBugApi url
-# port is the port this app is mapped too
-#   for example if you run this locally http:\\127.0.0.1:4242 or http:\\localhost:42
 # timezone is the icann names for the timezone and
 #   all times will have this timezone applied to them
 #   dates in the UI, FogBugz dates are stored in UTC
 # https://github.com/go-yaml/yaml
 user: USERNAME
 password: "password"
-rootsite: https://company.fogbugz.com/api.asp
-port: 4242
+rootsite: https://electsolve.fogbugz.com/api.asp
 timezone: America/Chicago

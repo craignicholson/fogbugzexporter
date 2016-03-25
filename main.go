@@ -17,9 +17,8 @@ import (
 	"strconv"
 	"time"
 
-	"gopkg.in/yaml.v2"
-
 	"github.com/craignicholson/fogbugz/fogbugz"
+	"gopkg.in/yaml.v2"
 )
 
 // config stores the configurations for the api package
@@ -27,7 +26,6 @@ type config struct {
 	User     string `yaml:"user,omitempty"`
 	Password string `yaml:"password,omitempty"`
 	Rootsite string `yaml:"rootsite,omitempty"`
-	Port     int    `yaml:"port,omitempty"`
 	Timezone string `yaml:"timezone,omitempty"`
 }
 
@@ -37,10 +35,11 @@ var configs config
 func main() {
 
 	setupAPI()
-	// Receives yyyy-mm-dd in your local timezone
-	//Check if we have args
+	// Receives YYYY-MM-DD in your local timezone
+	// Check for required agruments
 	if len(os.Args) != 3 {
 		fmt.Println("Missing Parameters")
+		//TODO: add more specific instructions output for user
 		os.Exit(3)
 	} else {
 		var from = os.Args[1]
@@ -65,6 +64,7 @@ func validateArgs(startDateLocal string, endDateLocal string, timezone string) b
 		fmt.Println(errloc)
 		isValid = false
 	}
+
 	const shortFormlayout = "2006-01-02"
 	_, errStart := time.ParseInLocation(shortFormlayout, startDateLocal, loc)
 	if errStart != nil {
@@ -89,7 +89,7 @@ func setupAPI() {
 		log.Fatalf("error: %v", err)
 	}
 
-	//Setup the API on App Load. Don't login.
+	//Load the configs
 	u, err := url.Parse(configs.Rootsite)
 	if err != nil {
 		log.Fatal(err)
@@ -97,6 +97,7 @@ func setupAPI() {
 	api.Root = u
 }
 
+// export pulls the hours and writes the results to a csv and json file.
 func export(from string, to string) {
 	api.Login(configs.User, configs.Password)
 	//hours := api.GetHours("2016-01-01", "2016-03-16", "America/Chicago")
@@ -104,25 +105,23 @@ func export(from string, to string) {
 
 	api.InvalidateToken()
 
-	//TODO:  json.Marshal writes & as unicode and a few other odd items seen output file
 	data, err := json.Marshal(hours)
 	if err != nil {
 		fmt.Println(err)
 	}
-	writeFile(data, "hours.json")
+	writeJSONFile(data, "hours.json")
 	writeCsvFile(hours, "hours.csv")
 }
 
-// Persit the data to disk for user to download.
-// TODO: What happens if multiple people run this as the same time.
-// TODO: Sql will never be able to handle values like "'", can i fix that?
-func writeFile(data []byte, filename string) {
+// writeJSONFile write the data to disk in JSON format.
+func writeJSONFile(data []byte, filename string) {
 	err := ioutil.WriteFile(filename, data, 0644)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 }
 
+// writeCsvFile write the data to disk in csv format.
 func writeCsvFile(data []fogbugz.Hour, filename string) {
 	// Create a csv file
 	f, err := os.Create("hours.csv")
