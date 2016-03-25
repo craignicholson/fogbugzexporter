@@ -32,12 +32,14 @@ type config struct {
 var api fogbugz.API
 var configs config
 
+// Expecations from the command ListMilestone
+// User enters from and to dates in the following formats:
+// "2006-01-02" "2006-01-03"
+// Timezone is located in the app.yaml file
 func main() {
 
 	setupAPI()
 
-	// Receives YYYY-MM-DD in your local timezone
-	// Check for required agruments
 	if len(os.Args) != 3 {
 		fmt.Println("Missing Parameters")
 		//TODO: add more specific instructions output for user
@@ -78,7 +80,6 @@ func validateArgs(startDateLocal string, endDateLocal string, timezone string) b
 		fmt.Println(errEnd)
 		isValid = false
 	}
-
 	return isValid
 }
 
@@ -107,9 +108,8 @@ func setupAPI() {
 // export pulls the hours and writes the results to a csv and json file.
 func export(from string, to string) {
 	api.Login(configs.User, configs.Password)
-	//hours := api.GetHours("2016-01-01", "2016-03-16", "America/Chicago")
-	hours := api.GetHours(from, to, configs.Timezone)
 
+	hours := api.GetHours(from, to, configs.Timezone)
 	api.InvalidateToken()
 
 	data, err := json.Marshal(hours)
@@ -136,19 +136,19 @@ func writeCsvFile(data []fogbugz.Hour, filename string) {
 		fmt.Println(err)
 	}
 	defer f.Close()
-	// Write Unmarshaled json data to CSV file
+
 	w := csv.NewWriter(f)
 	// header records
 	//TODO: I should be able to get all the struct names dymanically
 	header := []string{"RowID", "StartDate", "EndDate", "Title", "Duration", "Expense", "Employee", "Project", "MileStone", "Customer", "CaseNumber", "BillingPeriod", "Area", "Category", "StartNote", "Year", "Month", "Day", "DOW", "Tags"}
 	w.Write(header)
-	//for i := 0; i < len(data); i++ {
+
 	for i, item := range data {
 		var record []string
 		// This could also be hour.ID which is ixPerson
 		record = append(record, strconv.Itoa(i))
-		//Note: When commans occur in the string, encoding/csv wraps the string in double quotes
-		//TODO: Wrap all strings in double quotes
+		// When commans occur in the string, package encoding/csv
+		// wraps the string in double quotes for us (yeh!)
 		record = append(record, item.StartDate.Format("2006-01-02 03:04:05 PM"))
 		record = append(record, item.EndDate.Format("2006-01-02 03:04:05 PM"))
 		record = append(record, item.Title)
