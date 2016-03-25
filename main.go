@@ -84,14 +84,19 @@ func validateArgs(startDateLocal string, endDateLocal string, timezone string) b
 
 // setupAPI loads the configs and assigns the configs to the api
 func setupAPI() {
-	data, _ := ioutil.ReadFile("app.yaml")
-	err := yaml.Unmarshal(data, &configs)
+
+	data, err := ioutil.ReadFile("app.yaml")
 	if err != nil {
-		fmt.Println(err)
-		log.Fatalf("error: %v", err)
+		panic(err)
 	}
 
-	//Load the configs
+	erryaml := yaml.Unmarshal(data, &configs)
+	if erryaml != nil {
+		fmt.Println(erryaml)
+		log.Fatalf("error: %v", erryaml)
+	}
+
+	//Map the string url to url Structure
 	u, err := url.Parse(configs.Rootsite)
 	if err != nil {
 		log.Fatal(err)
